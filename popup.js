@@ -24,7 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
     { name: "Honolulu", timezone: "Pacific/Honolulu" },
     { name: "Delhi", timezone: "Asia/Kolkata" },
     { name: "Cape Town", timezone: "Africa/Johannesburg" },
-    { name: "London", timezone: "Europe/London" }
+    { name: "London", timezone: "Europe/London" },
+    { name: "Warsaw", timezone: "Europe/Warsaw" }
   ];
 
   // Default locations
