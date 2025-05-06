@@ -52,8 +52,32 @@ jobs:
 
 workflows:
   version: 2
-  build-test-scan:
+  # This workflow runs on direct commits to main branch
+  main-branch-workflow:
     jobs:
       - sonarqube-analysis:
           context: SonarCloud
-      - security-scan 
+          filters:
+            branches:
+              only:
+                - main
+      - security-scan:
+          filters:
+            branches:
+              only:
+                - main
+  
+  # This workflow runs only on pull requests
+  pr_workflow:
+    jobs:
+      - sonarqube-analysis:
+          context: SonarCloud
+          filters:
+            branches:
+              ignore:
+                - main
+      - security-scan:
+          filters:
+            branches:
+              ignore:
+                - main
