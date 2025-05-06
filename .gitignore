@@ -25,4 +25,11 @@ build/
 
 # Extension specific
 *.pem
-*.crx 
+*.crx
+
+# Security and analysis
+.env
+.env.*
+coverage/
+.scannerwork/
+sonar-project.properties.local 

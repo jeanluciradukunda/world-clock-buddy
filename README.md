@@ -43,14 +43,17 @@ world-clock-buddy/
 
 ## CI/CD Pipeline
 
-This project uses GitHub Actions for continuous integration:
+This project uses a hybrid CI/CD approach with both GitHub Actions and CircleCI:
 
-- **Lint & Format Check**: ESLint for JavaScript and Prettier for formatting
+### GitHub Actions
+- **Lint & Format Check**: ESLint for JavaScript files
 - **HTML Validation**: Validates HTML structure and CSS
-- **Security Scan**: CodeQL and NJSScan to check for vulnerabilities
-- **Markdown Lint**: Ensures documentation follows best practices
 
-The workflows run automatically on pull requests to maintain code quality.
+### CircleCI
+- **SonarQube Analysis**: Code quality and code smell detection
+- **Security Scan**: NJSScan and npm audit for security vulnerabilities
+
+This split approach allows us to leverage the strengths of both platforms for more comprehensive quality checks.
 
 ## Dependencies
 
