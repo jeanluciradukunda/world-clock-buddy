@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "World Clock Buddy",
+  "description": "Shows time in UTC, London, and Cape Town with city search and custom locations",
+  "version": "1.0",
+  "action": {
+    "default_icon": "assets/clock-icon.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["storage", "activeTab"],
+  "icons": {
+    "128": "assets/clock-icon.png"
+  }
+} 
