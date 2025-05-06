@@ -2,30 +2,30 @@
 document.addEventListener('DOMContentLoaded', function() {
   // City/timezone database - Popular cities with their timezones
   const cityDatabase = [
-    { name: "New York", timezone: "America/New_York" },
-    { name: "Los Angeles", timezone: "America/Los_Angeles" },
-    { name: "Chicago", timezone: "America/Chicago" },
-    { name: "Toronto", timezone: "America/Toronto" },
-    { name: "Sydney", timezone: "Australia/Sydney" },
-    { name: "Tokyo", timezone: "Asia/Tokyo" },
-    { name: "Berlin", timezone: "Europe/Berlin" },
-    { name: "Paris", timezone: "Europe/Paris" },
-    { name: "Dubai", timezone: "Asia/Dubai" },
-    { name: "Singapore", timezone: "Asia/Singapore" },
-    { name: "Mumbai", timezone: "Asia/Kolkata" },
-    { name: "Rio de Janeiro", timezone: "America/Sao_Paulo" },
-    { name: "Moscow", timezone: "Europe/Moscow" },
-    { name: "Hong Kong", timezone: "Asia/Hong_Kong" },
-    { name: "Amsterdam", timezone: "Europe/Amsterdam" },
-    { name: "Istanbul", timezone: "Europe/Istanbul" },
-    { name: "Bangkok", timezone: "Asia/Bangkok" },
-    { name: "Cairo", timezone: "Africa/Cairo" },
-    { name: "Auckland", timezone: "Pacific/Auckland" },
-    { name: "Honolulu", timezone: "Pacific/Honolulu" },
-    { name: "Delhi", timezone: "Asia/Kolkata" },
-    { name: "Cape Town", timezone: "Africa/Johannesburg" },
-    { name: "London", timezone: "Europe/London" },
-    { name: "Warsaw", timezone: "Europe/Warsaw" }
+    { name: 'New York', timezone: 'America/New_York' },
+    { name: 'Los Angeles', timezone: 'America/Los_Angeles' },
+    { name: 'Chicago', timezone: 'America/Chicago' },
+    { name: 'Toronto', timezone: 'America/Toronto' },
+    { name: 'Sydney', timezone: 'Australia/Sydney' },
+    { name: 'Tokyo', timezone: 'Asia/Tokyo' },
+    { name: 'Berlin', timezone: 'Europe/Berlin' },
+    { name: 'Paris', timezone: 'Europe/Paris' },
+    { name: 'Dubai', timezone: 'Asia/Dubai' },
+    { name: 'Singapore', timezone: 'Asia/Singapore' },
+    { name: 'Mumbai', timezone: 'Asia/Kolkata' },
+    { name: 'Rio de Janeiro', timezone: 'America/Sao_Paulo' },
+    { name: 'Moscow', timezone: 'Europe/Moscow' },
+    { name: 'Hong Kong', timezone: 'Asia/Hong_Kong' },
+    { name: 'Amsterdam', timezone: 'Europe/Amsterdam' },
+    { name: 'Istanbul', timezone: 'Europe/Istanbul' },
+    { name: 'Bangkok', timezone: 'Asia/Bangkok' },
+    { name: 'Cairo', timezone: 'Africa/Cairo' },
+    { name: 'Auckland', timezone: 'Pacific/Auckland' },
+    { name: 'Honolulu', timezone: 'Pacific/Honolulu' },
+    { name: 'Delhi', timezone: 'Asia/Kolkata' },
+    { name: 'Cape Town', timezone: 'Africa/Johannesburg' },
+    { name: 'London', timezone: 'Europe/London' },
+    { name: 'Warsaw', timezone: 'Europe/Warsaw' }
   ];
 
   // Default locations
@@ -44,6 +44,9 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Store for custom locations
   let customLocations = [];
+  
+  // Store for timezone offsets (to help with highlighting corresponding times)
+  const timezoneOffsets = {};
   
   // UI Elements
   const searchToggle = document.getElementById('search-toggle');
@@ -565,7 +568,7 @@ document.addEventListener('DOMContentLoaded', function() {
   settingsToggle.addEventListener('click', () => {
     // Show all hidden timezones
     if (hiddenTimezones.length > 0) {
-      const confirmed = confirm("Restore all hidden timezones?");
+      const confirmed = confirm('Restore all hidden timezones?');
       if (confirmed) {
         // Create a copy of hiddenTimezones before modifying it
         const timezonesToRestore = [...hiddenTimezones];
@@ -585,7 +588,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       }
     } else {
-      alert("No hidden timezones to restore");
+      alert('No hidden timezones to restore');
     }
   });
   
