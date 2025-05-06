@@ -34,11 +34,23 @@ A modern Chrome extension that displays the current time in multiple timezones w
 world-clock-buddy/
 ├── assets/             # Images and icons
 ├── lib/                # External libraries
+├── .github/            # GitHub Actions workflows
 ├── popup.html          # Main extension UI
 ├── popup.js            # Extension functionality
 ├── manifest.json       # Extension configuration
 └── README.md           # Documentation
 ```
+
+## CI/CD Pipeline
+
+This project uses GitHub Actions for continuous integration:
+
+- **Lint & Format Check**: ESLint for JavaScript and Prettier for formatting
+- **HTML Validation**: Validates HTML structure and CSS
+- **Security Scan**: CodeQL and NJSScan to check for vulnerabilities
+- **Markdown Lint**: Ensures documentation follows best practices
+
+The workflows run automatically on pull requests to maintain code quality.
 
 ## Dependencies
 
@@ -53,9 +65,11 @@ This extension uses:
 To modify or enhance the extension:
 
 1. Clone the repository
-2. Make your changes to the HTML, CSS, and JavaScript files
-3. Test your changes by loading the extension in developer mode
-4. For distribution, you can create a ZIP file of the entire directory
+2. Install dependencies: `npm install`
+3. Make your changes to the HTML, CSS, and JavaScript files
+4. Run linting: `npm run lint`
+5. Test your changes by loading the extension in developer mode
+6. Create a build package: `npm run build`
 
 ## Future Enhancements
 
