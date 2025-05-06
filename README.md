@@ -71,6 +71,41 @@ To modify or enhance the extension:
 5. Test your changes by loading the extension in developer mode
 6. Create a build package: `npm run build`
 
+## Linting Instructions
+
+To ensure code quality and consistency, we use ESLint for JavaScript linting. Here's how to run it locally:
+
+1. Make sure you have all dependencies installed:
+   ```
+   npm install
+   ```
+
+2. Run ESLint on a specific file:
+   ```
+   npx eslint filename.js
+   ```
+
+3. Run ESLint on all JavaScript files:
+   ```
+   npx eslint .
+   ```
+
+4. Automatically fix some common issues:
+   ```
+   npx eslint --fix .
+   ```
+
+5. Common linting rules enforced:
+   - Single quotes for strings
+   - No unused variables
+   - Proper spacing and formatting
+   - No undefined functions
+
+If you're getting errors about missing plugins when running ESLint, you may need to install them:
+```
+npm install eslint-plugin-html eslint-plugin-json --save-dev
+```
+
 ## Future Enhancements
 
 - World map visualization showing day/night across the globe
