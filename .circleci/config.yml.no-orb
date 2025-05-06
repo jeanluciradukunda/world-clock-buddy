@@ -1,0 +1,60 @@
+version: 2.1
+
+jobs:
+  sonarqube-analysis:
+    docker:
+      - image: cimg/node:16.13
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Install dependencies
+          command: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Download and install SonarScanner
+          command: |
+            wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
+            unzip sonar-scanner-cli-4.8.0.2856-linux.zip
+            mv sonar-scanner-4.8.0.2856-linux sonar-scanner
+      - run:
+          name: Run SonarQube analysis
+          command: |
+            export SONAR_SCANNER_OPTS="-Xmx2048m"
+            ./sonar-scanner/bin/sonar-scanner \
+              -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+              -Dsonar.organization=${SONAR_ORGANIZATION} \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=${SONAR_TOKEN}
+  
+  security-scan:
+    docker:
+      - image: cimg/node:16.13
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Run Security Scan
+          command: |
+            npm install -g njsscan
+            njsscan .
+      - run:
+          name: Run npm audit
+          command: npm audit --audit-level=high
+
+workflows:
+  version: 2
+  code-quality:
+    jobs:
+      - sonarqube-analysis
+      - security-scan 
