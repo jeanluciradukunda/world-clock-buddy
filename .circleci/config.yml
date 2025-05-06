@@ -1,0 +1,56 @@
+version: 2.1
+
+orbs:
+  sonarcloud: sonarsource/sonarcloud@2.0.0
+
+jobs:
+  sonarqube-analysis:
+    docker:
+      - image: cimg/node:16.13
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Install dependencies
+          command: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Set up SonarQube scan environment
+          command: |
+            echo "Preparing SonarQube analysis with secure credentials"
+            # No tokens are exposed in logs
+      - sonarcloud/scan:
+          sonar_organization_config_mode: environment_variable
+  
+  security-scan:
+    docker:
+      - image: cimg/node:16.13
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Run Security Scan
+          command: |
+            npm install -g njsscan
+            njsscan .
+      - run:
+          name: Run npm audit
+          command: npm audit --audit-level=high
+
+workflows:
+  version: 2
+  code-quality:
+    jobs:
+      - sonarqube-analysis:
+          context: SonarCloud
+      - security-scan 

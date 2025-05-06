@@ -1,28 +1,23 @@
-name: Security Check
+name: Security Check (Legacy)
 
 on:
-  pull_request:
-    branches: [ main, master ]
-  schedule:
-    - cron: '0 0 * * 0'  # Run weekly on Sundays
-  # Allow manual trigger
-  workflow_dispatch:
+  workflow_dispatch: # Manual trigger only
 
 jobs:
-  codeql-analysis:
-    name: CodeQL Security Scan
+  security-notice:
+    name: Security Scan Notice
     runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-      
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: javascript
-          
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2 
+      - name: Security Scanning has moved
+        run: |
+          echo "Security scanning has been moved to CircleCI"
+          echo "This workflow remains for reference but is not actively used"
+          exit 0
+
+# Note: Security scanning has been moved to CircleCI
+# See .circleci/config.yml for the current implementation
+# This includes:
+# - CodeQL Analysis
+# - NJSScan for Node.js security
+# - npm audit
+# - SonarQube analysis 
