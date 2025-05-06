@@ -1,8 +1,5 @@
 version: 2.1
 
-orbs:
-  sonarcloud: sonarsource/sonarcloud@2.0.0
-
 jobs:
   sonarqube-analysis:
     docker:
@@ -20,11 +17,20 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
       - run:
-          name: Set up SonarQube scan environment
+          name: Download and install SonarScanner
           command: |
-            echo "Preparing SonarQube analysis with secure credentials"
-            # CircleCI will automatically detect if we're running on a PR
-      - sonarcloud/scan
+            wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
+            unzip sonar-scanner-cli-4.8.0.2856-linux.zip
+            mv sonar-scanner-4.8.0.2856-linux sonar-scanner
+      - run:
+          name: Run SonarQube analysis
+          command: |
+            export SONAR_SCANNER_OPTS="-Xmx2048m"
+            ./sonar-scanner/bin/sonar-scanner \
+              -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+              -Dsonar.organization=${SONAR_ORGANIZATION} \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=${SONAR_TOKEN}
   
   security-scan:
     docker:
@@ -48,8 +54,7 @@ jobs:
 
 workflows:
   version: 2
-  build-test-scan:
+  code-quality:
     jobs:
-      - sonarqube-analysis:
-          context: SonarCloud
+      - sonarqube-analysis
       - security-scan 
