@@ -2,41 +2,35 @@
 document.addEventListener('DOMContentLoaded', function() {
   // City/timezone database - Popular cities with their timezones
   const cityDatabase = [
-    { name: "New York", timezone: "America/New_York" },
-    { name: "Los Angeles", timezone: "America/Los_Angeles" },
-    { name: "Chicago", timezone: "America/Chicago" },
-    { name: "Toronto", timezone: "America/Toronto" },
-    { name: "Sydney", timezone: "Australia/Sydney" },
-    { name: "Tokyo", timezone: "Asia/Tokyo" },
-    { name: "Berlin", timezone: "Europe/Berlin" },
-    { name: "Paris", timezone: "Europe/Paris" },
-    { name: "Dubai", timezone: "Asia/Dubai" },
-    { name: "Singapore", timezone: "Asia/Singapore" },
-    { name: "Mumbai", timezone: "Asia/Kolkata" },
-    { name: "Rio de Janeiro", timezone: "America/Sao_Paulo" },
-    { name: "Moscow", timezone: "Europe/Moscow" },
-    { name: "Hong Kong", timezone: "Asia/Hong_Kong" },
-    { name: "Amsterdam", timezone: "Europe/Amsterdam" },
-    { name: "Istanbul", timezone: "Europe/Istanbul" },
-    { name: "Bangkok", timezone: "Asia/Bangkok" },
-    { name: "Cairo", timezone: "Africa/Cairo" },
-    { name: "Auckland", timezone: "Pacific/Auckland" },
-    { name: "Honolulu", timezone: "Pacific/Honolulu" },
-    { name: "Delhi", timezone: "Asia/Kolkata" },
-    { name: "Cape Town", timezone: "Africa/Johannesburg" },
-    { name: "London", timezone: "Europe/London" },
-    { name: "Warsaw", timezone: "Europe/Warsaw" }
+    { name: 'New York', timezone: 'America/New_York' },
+    { name: 'Los Angeles', timezone: 'America/Los_Angeles' },
+    { name: 'Chicago', timezone: 'America/Chicago' },
+    { name: 'Toronto', timezone: 'America/Toronto' },
+    { name: 'Sydney', timezone: 'Australia/Sydney' },
+    { name: 'Tokyo', timezone: 'Asia/Tokyo' },
+    { name: 'Berlin', timezone: 'Europe/Berlin' },
+    { name: 'Paris', timezone: 'Europe/Paris' },
+    { name: 'Dubai', timezone: 'Asia/Dubai' },
+    { name: 'Singapore', timezone: 'Asia/Singapore' },
+    { name: 'Mumbai', timezone: 'Asia/Kolkata' },
+    { name: 'Rio de Janeiro', timezone: 'America/Sao_Paulo' },
+    { name: 'Moscow', timezone: 'Europe/Moscow' },
+    { name: 'Hong Kong', timezone: 'Asia/Hong_Kong' },
+    { name: 'Amsterdam', timezone: 'Europe/Amsterdam' },
+    { name: 'Istanbul', timezone: 'Europe/Istanbul' },
+    { name: 'Bangkok', timezone: 'Asia/Bangkok' },
+    { name: 'Cairo', timezone: 'Africa/Cairo' },
+    { name: 'Auckland', timezone: 'Pacific/Auckland' },
+    { name: 'Honolulu', timezone: 'Pacific/Honolulu' },
+    { name: 'Delhi', timezone: 'Asia/Kolkata' },
+    { name: 'Cape Town', timezone: 'Africa/Johannesburg' },
+    { name: 'London', timezone: 'Europe/London' },
+    { name: 'Warsaw', timezone: 'Europe/Warsaw' }
   ];
 
-  // Default locations
-  const defaultLocations = [
-    { id: 'local', name: 'Your Time', timezone: luxon.Settings.defaultZone },
-    { id: 'utc', name: 'UTC', timezone: 'UTC' }
-  ];
-  
   // Initial locations to load if no saved state exists
   const initialLocationsToLoad = [
-    "London", "Cape Town"
+    'London', 'Cape Town'
   ];
   
   // Store for timezone visibility state
@@ -327,27 +321,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Format timezone offset
-  function formatTimezoneOffset(offset) {
-    // Use Luxon to format offset
-    try {
-      const dt = luxon.DateTime.now().setZone(`UTC${offset >= 0 ? '+' : ''}${offset}`);
-      return dt.offsetNameShort;
-    } catch (e) {
-      // Fallback to simple formatting
-      const prefix = offset >= 0 ? '+' : '';
-      const absOffset = Math.abs(offset);
-      const hours = Math.floor(absOffset);
-      const minutes = Math.round((absOffset % 1) * 60);
-      
-      if (minutes === 0) {
-        return `GMT${prefix}${hours}`;
-      } else {
-        return `GMT${prefix}${hours}:${minutes.toString().padStart(2, '0')}`;
-      }
-    }
-  }
-  
   // Function to update all clocks
   function updateClocks() {
     // Update default clocks
@@ -453,106 +426,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Get time in a specific timezone
-  function getTimeInTimezone(date, timezone) {
-    // Convert to Luxon DateTime
-    const luxonDate = luxon.DateTime.fromJSDate(date);
-    try {
-      // Convert to the target timezone
-      return luxonDate.setZone(timezone).toMillis();
-    } catch (e) {
-      console.error('Error converting timezone with Luxon:', e);
-      return date.getTime();
-    }
-  }
-  
-  // Function to update time display for a specific timezone
-  function updateTimeDisplay(locationId, utcDate, hoursOffset) {
-    // Clone the UTC date and add the offset
-    const localDate = new Date(utcDate);
-    
-    // Set hours correctly according to the offset
-    // First get current UTC hours and minutes
-    const utcHours = utcDate.getUTCHours();
-    const utcMinutes = utcDate.getUTCMinutes();
-    
-    // Calculate local hours with the offset
-    let localHours = Math.floor(utcHours + hoursOffset);
-    let localMinutes = utcMinutes;
-    
-    // Handle fractional offsets (like for India which is UTC+5:30)
-    if (hoursOffset % 1 !== 0) {
-      const fractionalPart = hoursOffset % 1;
-      const additionalMinutes = fractionalPart * 60;
-      localMinutes += Math.round(additionalMinutes);
-      
-      // Adjust hours if minutes overflow
-      if (localMinutes >= 60) {
-        localHours += Math.floor(localMinutes / 60);
-        localMinutes = localMinutes % 60;
-      }
-    }
-    
-    // Ensure hours are within 0-23 range
-    localHours = Math.floor((localHours + 24) % 24);
-    
-    // Format time (12-hour format with am/pm)
-    const ampm = localHours >= 12 ? 'pm' : 'am';
-    const hours12 = localHours % 12 || 12; // Convert to 12-hour format
-    
-    // Update the time display
-    const timeElement = document.getElementById(`${locationId}-time`);
-    if (timeElement) {
-      timeElement.textContent = `${hours12}:${Math.floor(localMinutes).toString().padStart(2, '0')} ${ampm}`;
-    
-      // Update the hour blocks
-      updateHourBlocks(locationId, localHours);
-    }
-  }
-  
-  // Convert a local hour to its UTC equivalent
-  function getUTCHourFromLocalHour(localHour, offset) {
-    // Calculate what this hour is in UTC
-    // For fractional offsets, we'll round to nearest hour for highlighting purposes
-    let utcHour = (localHour - offset + 24) % 24;
-    // Ensure the result is a valid hour (0-23)
-    if (utcHour < 0) utcHour += 24;
-    if (utcHour >= 24) utcHour -= 24;
-    return Math.round(utcHour);
-  }
-  
-  // Convert a UTC hour to a local hour based on timezone offset
-  function getLocalHourFromUTCHour(utcHour, offset) {
-    let localHour = (utcHour + offset) % 24;
-    // Ensure the result is a valid hour (0-23)
-    if (localHour < 0) localHour += 24;
-    if (localHour >= 24) localHour -= 24;
-    return Math.round(localHour);
-  }
-  
-  // Highlight hours that correspond to the same UTC time
-  function highlightCorrespondingHours(utcHour) {
-    // Get all hour blocks
-    const allHourBlocks = document.querySelectorAll('.hour-block');
-    
-    allHourBlocks.forEach(block => {
-      const locationId = block.dataset.locationId;
-      const localHour = parseInt(block.dataset.hour);
-      
-      // Make sure this location's offset is registered, fallback to 0 if not
-      const offset = timezoneOffsets[locationId] || 0;
-      
-      // Calculate the UTC hour this local hour corresponds to
-      const blockUtcHour = getUTCHourFromLocalHour(localHour, offset);
-      
-      // Highlight if it matches the target UTC hour (accounting for rounding errors and edge cases)
-      if (Math.abs(blockUtcHour - utcHour) < 0.5 || 
-          Math.abs(blockUtcHour - utcHour) > 23.5) { // Handle midnight boundary case
-        block.classList.add('time-highlight');
-      }
-    });
-  }
-  
   // Clear all hour highlights
   function clearHourHighlights() {
     const allHourBlocks = document.querySelectorAll('.hour-block');
@@ -565,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function() {
   settingsToggle.addEventListener('click', () => {
     // Show all hidden timezones
     if (hiddenTimezones.length > 0) {
-      const confirmed = confirm("Restore all hidden timezones?");
+      const confirmed = confirm('Restore all hidden timezones?');
       if (confirmed) {
         // Create a copy of hiddenTimezones before modifying it
         const timezonesToRestore = [...hiddenTimezones];
@@ -585,7 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       }
     } else {
-      alert("No hidden timezones to restore");
+      alert('No hidden timezones to restore');
     }
   });
   

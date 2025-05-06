@@ -34,11 +34,23 @@ A modern Chrome extension that displays the current time in multiple timezones w
 world-clock-buddy/
 ├── assets/             # Images and icons
 ├── lib/                # External libraries
+├── .github/            # GitHub Actions workflows
 ├── popup.html          # Main extension UI
 ├── popup.js            # Extension functionality
 ├── manifest.json       # Extension configuration
 └── README.md           # Documentation
 ```
+
+## CI/CD Pipeline
+
+This project uses GitHub Actions for continuous integration:
+
+- **Lint & Format Check**: ESLint for JavaScript and Prettier for formatting
+- **HTML Validation**: Validates HTML structure and CSS
+- **Security Scan**: CodeQL and NJSScan to check for vulnerabilities
+- **Markdown Lint**: Ensures documentation follows best practices
+
+The workflows run automatically on pull requests to maintain code quality.
 
 ## Dependencies
 
@@ -53,9 +65,46 @@ This extension uses:
 To modify or enhance the extension:
 
 1. Clone the repository
-2. Make your changes to the HTML, CSS, and JavaScript files
-3. Test your changes by loading the extension in developer mode
-4. For distribution, you can create a ZIP file of the entire directory
+2. Install dependencies: `npm install`
+3. Make your changes to the HTML, CSS, and JavaScript files
+4. Run linting: `npm run lint`
+5. Test your changes by loading the extension in developer mode
+6. Create a build package: `npm run build`
+
+## Linting Instructions
+
+To ensure code quality and consistency, we use ESLint for JavaScript linting. Here's how to run it locally:
+
+1. Make sure you have all dependencies installed:
+   ```
+   npm install
+   ```
+
+2. Run ESLint on a specific file:
+   ```
+   npx eslint filename.js
+   ```
+
+3. Run ESLint on all JavaScript files:
+   ```
+   npx eslint .
+   ```
+
+4. Automatically fix some common issues:
+   ```
+   npx eslint --fix .
+   ```
+
+5. Common linting rules enforced:
+   - Single quotes for strings
+   - No unused variables
+   - Proper spacing and formatting
+   - No undefined functions
+
+If you're getting errors about missing plugins when running ESLint, you may need to install them:
+```
+npm install eslint-plugin-html eslint-plugin-json --save-dev
+```
 
 ## Future Enhancements
 

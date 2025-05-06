@@ -1,0 +1,28 @@
+{
+  "name": "world-clock-buddy",
+  "version": "1.0.0",
+  "description": "A Chrome extension for showing time across multiple timezones",
+  "main": "popup.js",
+  "scripts": {
+    "lint": "eslint **/*.{js,html,json} --ignore-pattern 'node_modules/' --ignore-pattern 'lib/'",
+    "lint:fix": "eslint **/*.{js,html,json} --ignore-pattern 'node_modules/' --ignore-pattern 'lib/' --fix",
+    "build": "zip -r world-clock-buddy.zip . -x '*.git*' 'node_modules/*' '*.zip'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/world-clock-buddy.git"
+  },
+  "keywords": [
+    "chrome-extension",
+    "timezone",
+    "clock",
+    "world-clock"
+  ],
+  "author": "Jean Luc N. Iradukunda",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.44.0",
+    "eslint-plugin-html": "^8.1.2",
+    "eslint-plugin-json": "^4.0.1"
+  }
+}
