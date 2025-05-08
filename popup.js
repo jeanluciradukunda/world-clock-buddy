@@ -28,18 +28,13 @@ document.addEventListener('DOMContentLoaded', function() {
     { name: 'Warsaw', timezone: 'Europe/Warsaw' }
   ];
 
-  // Initial locations to load if no saved state exists
   const initialLocationsToLoad = [
     'London', 'Cape Town'
   ];
   
-  // Store for timezone visibility state
   let hiddenTimezones = [];
   
-  // Store for custom locations
   let customLocations = [];
-  
-  // UI Elements
   const searchToggle = document.getElementById('search-toggle');
   const settingsToggle = document.getElementById('settings-toggle');
   const searchPanel = document.getElementById('search-panel');
@@ -47,14 +42,12 @@ document.addEventListener('DOMContentLoaded', function() {
   const searchResults = document.getElementById('search-results');
   const customLocationsContainer = document.getElementById('custom-locations');
   const addLocationPrompt = document.getElementById('add-location-prompt');
-  
-  // Add location prompt click event
+
   addLocationPrompt.addEventListener('click', () => {
     searchPanel.classList.add('active');
     citySearch.focus();
   });
   
-  // Hide any old placeholder elements that might still be in the DOM
   function hideOldPlaceholders() {
     const oldPlaceholders = ['london-clock', 'capetown-clock'];
     oldPlaceholders.forEach(id => {
@@ -65,14 +58,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Setup initial state - called only once on first run
   function setupInitialState() {
     chrome.storage.sync.get(['hasInitialized'], function(result) {
       if (!result.hasInitialized) {
-        // Clear any existing custom locations to start fresh
         customLocations = [];
         
-        // Add initial locations from our predefined list
         initialLocationsToLoad.forEach(locationName => {
           const locationEntry = cityDatabase.find(city => city.name === locationName);
           if (locationEntry) {
@@ -83,25 +73,19 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         });
         
-        // Save the locations
         saveCustomLocations();
         
-        // Render the locations
         renderCustomLocations();
         
-        // Update clocks to show the new locations immediately
         updateClocks();
         
-        // Mark as initialized
         chrome.storage.sync.set({ hasInitialized: true });
       }
     });
   }
   
-  // Load saved custom locations and hidden timezones
   function loadSavedSettings() {
     chrome.storage.sync.get(['customLocations', 'hiddenTimezones', 'hasInitialized'], function(result) {
-      // Hide any old placeholder elements
       hideOldPlaceholders();
       
       if (result.customLocations && result.customLocations.length > 0) {
@@ -114,17 +98,14 @@ document.addEventListener('DOMContentLoaded', function() {
         applyHiddenTimezones();
       }
       
-      // If it's a first run, set up initial locations
       if (!result.hasInitialized) {
         setupInitialState();
       }
       
-      // Make sure clocks are updated after loading settings
       updateClocks();
     });
   }
   
-  // Apply hidden timezones
   function applyHiddenTimezones() {
     hiddenTimezones.forEach(id => {
       const timezone = document.getElementById(`${id}-clock`);
@@ -134,17 +115,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Save custom locations
   function saveCustomLocations() {
     chrome.storage.sync.set({ customLocations: customLocations });
   }
   
-  // Save hidden timezones
   function saveHiddenTimezones() {
     chrome.storage.sync.set({ hiddenTimezones: hiddenTimezones });
   }
   
-  // Toggle timezone visibility
   function toggleTimezoneVisibility(id, hide) {
     const timezone = document.getElementById(`${id}-clock`);
     if (!timezone) return;
@@ -162,7 +140,6 @@ document.addEventListener('DOMContentLoaded', function() {
     saveHiddenTimezones();
   }
   
-  // Setup remove buttons
   function setupRemoveButtons() {
     const removeButtons = document.querySelectorAll('.remove-btn');
     removeButtons.forEach(button => {
@@ -191,7 +168,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Render custom locations
   function renderCustomLocations() {
     customLocationsContainer.innerHTML = '';
     
@@ -202,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
       locationElement.id = `${locationId}-clock`;
       locationElement.innerHTML = `
         <button class="remove-btn" data-id="${locationId}">
-          <img src="assets/remove.png" alt="Remove">
+          <img src="assets/delete-icon.png" alt="Remove">
         </button>
         <div class="clock-row">
           <div>
@@ -224,11 +200,10 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Add custom location
   function addCustomLocation(location) {
-    // Don't add duplicates
     const isDuplicate = customLocations.some(
       existingLocation => existingLocation.name === location.name
     );
-    
+
     if (!isDuplicate) {
       customLocations.push({
         name: location.name,
@@ -239,29 +214,22 @@ document.addEventListener('DOMContentLoaded', function() {
       updateClocks(); // Update to show the new location immediately
     }
   }
-  
+
   // Remove custom location
   function removeCustomLocation(index) {
-    // Get the location ID before removing it from the array
     const locationId = `custom-${index}`;
-    
-    // Remove from customLocations array
+
     customLocations.splice(index, 1);
-    
-    // Also remove from hiddenTimezones if it exists there
+
     hiddenTimezones = hiddenTimezones.filter(id => id !== locationId);
-    
-    // Save both to Chrome storage
+
     saveCustomLocations();
     saveHiddenTimezones();
-    
-    // Re-render the locations
+
     renderCustomLocations();
-    
-    // Update clocks to ensure all UI elements are in sync
     updateClocks();
   }
-  
+
   // Toggle search panel visibility
   searchToggle.addEventListener('click', () => {
     searchPanel.classList.toggle('active');
@@ -269,44 +237,42 @@ document.addEventListener('DOMContentLoaded', function() {
       citySearch.focus();
     }
   });
-  
-  // Search functionality
+
   citySearch.addEventListener('input', () => {
     const searchTerm = citySearch.value.toLowerCase().trim();
     if (searchTerm.length < 2) {
       searchResults.innerHTML = '';
       return;
     }
-    
+
     const filteredCities = cityDatabase.filter(city => 
       city.name.toLowerCase().includes(searchTerm)
     );
-    
+
     renderSearchResults(filteredCities);
   });
-  
+
   // Render search results
   function renderSearchResults(cities) {
     searchResults.innerHTML = '';
-    
+
     if (cities.length === 0) {
       searchResults.innerHTML = '<div class="search-result">No cities found</div>';
       return;
     }
-    
+
     cities.forEach(city => {
       const resultElement = document.createElement('div');
       resultElement.className = 'search-result';
-      
-      // Get timezone info using Luxon
+
       const cityTime = luxon.DateTime.now().setZone(city.timezone);
       const offsetDisplay = cityTime.offsetNameShort;
-      
+
       resultElement.innerHTML = `
         <div class="result-location">${city.name}</div>
         <div class="result-timezone">${offsetDisplay}</div>
       `;
-      
+
       resultElement.addEventListener('click', () => {
         addCustomLocation({
           name: city.name,
@@ -316,106 +282,106 @@ document.addEventListener('DOMContentLoaded', function() {
         citySearch.value = '';
         searchResults.innerHTML = '';
       });
-      
+
       searchResults.appendChild(resultElement);
     });
   }
-  
-  // Function to update all clocks
+
   function updateClocks() {
-    // Update default clocks
     updateTimeForTimezone('local', luxon.Settings.defaultZone);
     updateTimeForTimezone('utc', 'UTC');
-    
-    // Update custom locations
+
     customLocations.forEach((location, index) => {
       const elementId = `custom-${index}`;
-      
+
       if (location.timezone) {
         updateTimeForTimezone(elementId, location.timezone);
       }
     });
   }
-  
-  // Update time display using Luxon
+
   function updateTimeForTimezone(locationId, timezone) {
     try {
-      // Get current time in the timezone
       const now = luxon.DateTime.now().setZone(timezone);
-      
-      // Update timezone display
+
       const tzElement = document.getElementById(`${locationId}-timezone`);
       if (tzElement) {
         tzElement.textContent = now.offsetNameShort;
       }
-      
-      // Update time display
+
       const timeElement = document.getElementById(`${locationId}-time`);
       if (timeElement) {
         timeElement.textContent = now.toLocaleString(luxon.DateTime.TIME_SIMPLE);
       }
-      
-      // Update hour blocks
+
       updateHourBlocksWithLuxon(locationId, now.hour, timezone);
     } catch (e) {
       console.error(`Error updating time for ${locationId}:`, e);
     }
   }
-  
-  // Update hour blocks with Luxon
+
   function updateHourBlocksWithLuxon(locationId, currentHour, timezone) {
     const hoursContainer = document.getElementById(`${locationId}-hours`);
     if (!hoursContainer) return;
-    
-    hoursContainer.innerHTML = ''; // Clear existing hours
-    
-    // Create 5 hour blocks centered around the current hour
+
+    hoursContainer.innerHTML = '';
+
     const startHour = currentHour - 2;
-    
+
     for (let i = 0; i < 5; i++) {
-      const hour = (startHour + i + 24) % 24; // Ensure hour is between 0-23
-      
-      // Create DateTime object for this hour
+      const hour = (startHour + i + 24) % 24;
+
       const hourTime = luxon.DateTime.now().setZone(timezone).set({ hour: hour, minute: 0, second: 0, millisecond: 0 });
-      
+
       const hourBlock = document.createElement('div');
       hourBlock.className = 'hour-block';
       hourBlock.textContent = hourTime.toLocaleString({ hour: 'numeric', hour12: true });
-      
-      // Store data for highlighting
+
       hourBlock.dataset.locationId = locationId;
       hourBlock.dataset.hour = hour;
       hourBlock.dataset.timezone = timezone;
       hourBlock.dataset.timestamp = hourTime.toMillis().toString();
-      
-      // Highlight the current hour
+
+      hourBlock.dataset.iso8601 = formatTimeToISO8601(hourTime, timezone, locationId);
+
       if (hour === currentHour) {
         hourBlock.classList.add('current-hour');
       }
-      
+
       // Add hover effects
       hourBlock.addEventListener('mouseenter', () => {
         highlightCorrespondingHoursWithLuxon(hourTime);
       });
-      
+
       hourBlock.addEventListener('mouseleave', () => {
         clearHourHighlights();
       });
-      
+
+      // Add click event for copying ISO 8601 time
+      hourBlock.addEventListener('click', (event) => {
+        const isoTime = hourBlock.dataset.iso8601;
+        copyToClipboard(isoTime, hourBlock);
+
+        // Add visual feedback for the click
+        hourBlock.classList.add('clicked');
+        setTimeout(() => {
+          hourBlock.classList.remove('clicked');
+        }, 300);
+      });
+
       hoursContainer.appendChild(hourBlock);
     }
   }
-  
+
   // Highlight corresponding hours with Luxon
   function highlightCorrespondingHoursWithLuxon(sourceTime) {
-    // Get all hour blocks
     const allHourBlocks = document.querySelectorAll('.hour-block');
     const sourceTimestamp = sourceTime.toMillis();
-    
+
     allHourBlocks.forEach(block => {
       try {
         const blockTimestamp = Number(block.dataset.timestamp);
-        
+
         // If timestamps are within 5 minutes of each other, highlight
         if (Math.abs(blockTimestamp - sourceTimestamp) < 5 * 60 * 1000) {
           block.classList.add('time-highlight');
@@ -425,31 +391,61 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-  
-  // Clear all hour highlights
+
   function clearHourHighlights() {
     const allHourBlocks = document.querySelectorAll('.hour-block');
     allHourBlocks.forEach(block => {
       block.classList.remove('time-highlight');
     });
   }
+
+  function formatTimeToISO8601(dateTime, timezone, locationId) {
+    // Format ISO 8601 time with hours, minutes, seconds (no milliseconds)
+    // Format should be like: 2025-05-06T09:00:00Z or 2025-05-06T11:00:00+02:00
+
+    // Special case for UTC/GMT to use Z suffix instead of +00:00
+    if (timezone === 'UTC' || locationId === 'utc') {
+      return dateTime.toFormat('yyyy-MM-dd\'T\'HH:mm:ss') + 'Z';
+    } else {
+      return dateTime.toFormat('yyyy-MM-dd\'T\'HH:mm:ssZZ');
+    }
+  }
+
+  // Copy the ISO time to clipboard and show visual feedback
+  function copyToClipboard(text, element) {
+    navigator.clipboard.writeText(text).then(() => {
+      const copyIcon = document.createElement('img');
+      copyIcon.src = 'assets/copy.png';
+      copyIcon.alt = 'Copied';
+      copyIcon.className = 'copy-indicator';
+
+      // Position the copy icon in the center of the element
+      element.style.position = 'relative';
+      element.appendChild(copyIcon);
+  
+      // Animate the copy icon
+      setTimeout(() => {
+        copyIcon.classList.add('fade-out');
+        setTimeout(() => {
+          element.removeChild(copyIcon);
+        }, 800); // Remove after fade animation completes
+      }, 500); // Start fade after showing for 500ms
+    }).catch(err => {
+      console.error('Could not copy text: ', err);
+    });
+  }
   
   // Add restore button to settings
   settingsToggle.addEventListener('click', () => {
-    // Show all hidden timezones
     if (hiddenTimezones.length > 0) {
       const confirmed = confirm('Restore all hidden timezones?');
       if (confirmed) {
-        // Create a copy of hiddenTimezones before modifying it
         const timezonesToRestore = [...hiddenTimezones];
-        
-        // Clear the array first to avoid issues with filtering during iteration
+
         hiddenTimezones = [];
-        
-        // Save the empty array
+
         saveHiddenTimezones();
-        
-        // Now restore each timezone
+
         timezonesToRestore.forEach(id => {
           const timezone = document.getElementById(`${id}-clock`);
           if (timezone) {
@@ -464,29 +460,23 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initialize the extension
   function init() {
-    // Hide any old placeholder elements
     hideOldPlaceholders();
-    
-    // Set up remove buttons
+
     setupRemoveButtons();
-    
-    // Load saved settings
+
     loadSavedSettings();
-    
-    // Initial update immediately
+
     updateClocks();
-    
-    // Update every minute
+
     setInterval(updateClocks, 60000);
-    
-    // Also update whenever the popup becomes visible
+
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) {
         updateClocks();
       }
     });
   }
-  
+
   // Start the extension
   init();
 }); 
