@@ -186,6 +186,27 @@
       background-color: #FFD700 !important;
       color: #333 !important;
     }
+
+    .hour-block.clicked {
+      background-color: rgba(116, 185, 255, 0.4);
+      transition: background-color 0.3s ease;
+    }
+    
+    .copy-indicator {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 16px;
+      height: 16px;
+      opacity: 1;
+      transition: opacity 0.8s ease;
+      z-index: 10;
+    }
+    
+    .copy-indicator.fade-out {
+      opacity: 0;
+    }
     .search-panel {
       background-color: white;
       padding: 15px;
@@ -288,7 +309,7 @@
       <!-- Default clocks -->
       <div class="clock-widget user-time-widget" id="local-clock">
         <button class="remove-btn" data-id="local">
-          <img src="assets/remove.png" alt="Remove">
+          <img src="assets/red-trash-can-icon.png" alt="Remove">
         </button>
         <div class="clock-row">
           <div>
@@ -304,7 +325,7 @@
       
       <div class="clock-widget" id="utc-clock">
         <button class="remove-btn" data-id="utc">
-          <img src="assets/remove.png" alt="Remove">
+          <img src="assets/red-trash-can-icon.png" alt="Remove">
         </button>
         <div class="clock-row">
           <div>

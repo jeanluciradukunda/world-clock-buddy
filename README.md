@@ -8,6 +8,7 @@ A modern Chrome extension that displays the current time in multiple timezones w
 - Accurate timezone handling with proper DST (Daylight Saving Time) adjustments
 - Search and add cities from a comprehensive timezone database
 - Save custom locations that persist across browser sessions
+- Click on any time block to copy the exact ISO 8601 time format to your clipboard
 - Hover over time blocks to highlight the same time across all timezones
 - Modern, responsive UI with smooth animations
 - Clean visualization of time differences with 5-hour view for each location
@@ -25,6 +26,7 @@ A modern Chrome extension that displays the current time in multiple timezones w
 - Click on the extension icon in your Chrome toolbar to open the World Clock Buddy dashboard
 - Click the search icon to find and add new cities
 - Hover over any time block to see the equivalent times across all timezones
+- Click on any time block to copy its ISO 8601 time format to your clipboard (e.g., `2025-05-06T09:00:00Z` for UTC or `2025-05-06T11:00:00+02:00` for timezones with offsets)
 - Remove custom locations by clicking the X that appears when you hover over them
 - Use the settings icon to restore any previously hidden timezones
 
