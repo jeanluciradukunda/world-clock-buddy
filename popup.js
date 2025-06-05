@@ -221,7 +221,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     customLocations.splice(index, 1);
 
-    hiddenTimezones = hiddenTimezones.filter(id => id !== locationId);
+    // Remove the hidden entry for this location and shift any remaining
+    // custom indexes down so they continue to match the rendered elements
+    hiddenTimezones = hiddenTimezones
+      .map(id => {
+        const match = id.match(/^custom-(\d+)$/);
+        if (match) {
+          const idx = parseInt(match[1], 10);
+          if (idx === index) {
+            return null; // drop removed location
+          } else if (idx > index) {
+            return `custom-${idx - 1}`;
+          }
+        }
+        return id;
+      })
+      .filter(Boolean);
 
     saveCustomLocations();
     saveHiddenTimezones();
