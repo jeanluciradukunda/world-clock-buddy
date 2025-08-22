@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
   ];
   
   let hiddenTimezones = [];
+  let globalHourOffset = 0;
   
   let customLocations = [];
   const searchToggle = document.getElementById('search-toggle');
@@ -326,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     hoursContainer.innerHTML = '';
 
-    const startHour = currentHour - 2;
+    const startHour = currentHour - 2 + globalHourOffset;
 
     for (let i = 0; i < 5; i++) {
       const hour = (startHour + i + 24) % 24;
@@ -344,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       hourBlock.dataset.iso8601 = formatTimeToISO8601(hourTime, timezone, locationId);
 
-      if (hour === currentHour) {
+      if (i === 2) {
         hourBlock.classList.add('current-hour');
       }
 
@@ -357,8 +358,15 @@ document.addEventListener('DOMContentLoaded', function() {
         clearHourHighlights();
       });
 
-      // Add click event for copying ISO 8601 time
+      // Add click event for changing global offset and copying ISO 8601 time
       hourBlock.addEventListener('click', (event) => {
+        // Calculate new offset based on clicked hour vs center position (index 2)
+        const newOffset = globalHourOffset + (i - 2);
+        globalHourOffset = newOffset;
+        
+        // Update all clocks to reflect the new offset
+        updateClocks();
+        
         const isoTime = hourBlock.dataset.iso8601;
         copyToClipboard(isoTime, hourBlock);
 
